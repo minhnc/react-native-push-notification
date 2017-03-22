@@ -24,16 +24,22 @@ import static com.dieam.reactnativepushnotification.modules.RNPushNotification.L
 
 public class RNPushNotificationListenerService extends GcmListenerService {
 
+    /// [HSM-MINH] - make this compatible with IOS's push
     @Override
     public void onMessageReceived(String from, final Bundle bundle) {
-        JSONObject data = getPushData(bundle.getString("data"));
-        if (data != null) {
+        // JSONObject data = getPushData(bundle.getString("data"));
+        // if (data != null) {
+
+        JSONObject data = getPushData(bundle.getString("payload"));
+        if (data != null && data.has("message")) {
             if (!bundle.containsKey("message")) {
-                bundle.putString("message", data.optString("alert", "Notification received"));
+                // bundle.putString("message", data.optString("alert", "Notification received"));
+                bundle.putString("message", data.optString("message", null));
             }
-            if (!bundle.containsKey("title")) {
-                bundle.putString("title", data.optString("title", null));
-            }
+            // if (!bundle.containsKey("title")) {
+                bundle.putString("title", "DayBreak");
+            // }
+
             if (!bundle.containsKey("sound")) {
                 bundle.putString("soundName", data.optString("sound", null));
             }

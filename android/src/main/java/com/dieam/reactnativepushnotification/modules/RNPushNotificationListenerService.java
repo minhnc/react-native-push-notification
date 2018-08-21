@@ -27,7 +27,6 @@ import static com.dieam.reactnativepushnotification.modules.RNPushNotification.L
 
 public class RNPushNotificationListenerService extends FirebaseMessagingService {
 
-    /// [HSM-MINH] - make this compatible with IOS's push
     @Override
     public void onMessageReceived(RemoteMessage message) {
         String from = message.getFrom();
@@ -45,22 +44,29 @@ public class RNPushNotificationListenerService extends FirebaseMessagingService 
         for(Map.Entry<String, String> entry : message.getData().entrySet()) {
             bundle.putString(entry.getKey(), entry.getValue());
         }
-        JSONObject data = getPushData(bundle.getString("data"));
+
+        /// [HSM-MINH] - make this compatible with IOS's push
+        // JSONObject data = getPushData(bundle.getString("data"));
+        JSONObject data = getPushData(bundle.getString("payload"));
+        // ...end
+
         // Copy `twi_body` to `message` to support Twilio
         if (bundle.containsKey("twi_body")) {
             bundle.putString("message", bundle.getString("twi_body"));
         }
 
-        if (data != null) {
+        /// [HSM-MINH] - make this compatible with IOS's push
+        // if (data != null) {
+        if (data != null && data.has("message")) {
             if (!bundle.containsKey("message")) {
-                bundle.putString("message", data.optString("alert", null));
-            }
-            if (!bundle.containsKey("title")) {
-                bundle.putString("title", data.optString("title", null));
+                // bundle.putString("message", data.optString("alert", null));
+                bundle.putString("message", data.optString("message", null));
             }
             // if (!bundle.containsKey("title")) {
-                bundle.putString("title", "DayBreak");
+            //     bundle.putString("title", data.optString("title", null));
             // }
+            bundle.putString("title", "Daybreak");
+            // ...end
 
             if (!bundle.containsKey("sound")) {
                 bundle.putString("soundName", data.optString("sound", null));

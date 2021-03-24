@@ -56,14 +56,14 @@ public class RNReceivedMessageHandler {
         if (notificationData.containsKey("twi_body")) {
             bundle.putString("message", notificationData.get("twi_body"));
         }
-        JSONObject data = getPushData(notificationData.get("data"));
+        JSONObject data = getPushData(notificationData.get("payload")); // Customize for hsm2-backend - "data"
 
         if (data != null) {
             if (!bundle.containsKey("message")) {
-                bundle.putString("message", data.optString("alert", null));
+                bundle.putString("message", data.optString("message", null)); // Customize for hsm2-backend - "alert"
             }
             if (!bundle.containsKey("title")) {
-                bundle.putString("title", data.optString("title", null));
+                bundle.putString("title", "Daybreak"); // Customize for hsm2-backend - "share from android"
             }
             if (!bundle.containsKey("sound")) {
                 bundle.putString("soundName", data.optString("sound", null));
